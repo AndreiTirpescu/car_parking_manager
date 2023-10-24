@@ -34,22 +34,36 @@ public class CarParkingManager {
     }
 
     private ParkingSpot addOrRemoveCar(String car, Integer psId, LocalDateTime startTime, boolean isRemove) {
+        if (isRemove) {
+            return removeCar(psId);
+        }
+
+        return addCar(car, psId, startTime);
+    }
+
+    private ParkingSpot addCar(String car, Integer psId, LocalDateTime startTime) {
         ParkingSpot spot = repository.findById(psId);
 
         if (spot == null) {
             return null;
         }
 
-        if (isRemove) {
-            spot.setCarNumber(null);
-            spot.setReservedAt(null);
+        spot.setCarNumber(car);
+        spot.setReservedAt(startTime);
 
-            return repository.save(spot);
-        } else {
-            spot.setCarNumber(car);
-            spot.setReservedAt(startTime);
+        return repository.save(spot);
+    }
 
-            return repository.save(spot);
+    private ParkingSpot removeCar(Integer psId) {
+        ParkingSpot spot = repository.findById(psId);
+
+        if (spot == null) {
+            throw new CarNotFoundException();
         }
+
+        spot.setCarNumber(null);
+        spot.setReservedAt(null);
+
+        return repository.save(spot);
     }
 }
