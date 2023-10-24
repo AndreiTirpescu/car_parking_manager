@@ -18,6 +18,16 @@ public class CarParkingManager {
     }
 
     public ParkingSpot parkCar(String carNumber, String priceLevel, LocalDateTime reservedAt) {
+        Integer parkingSpotId = findAvailableParkingSpotId(priceLevel);
+
+        if (parkingSpotId != null) {
+            return addOrRemoveCar(carNumber, parkingSpotId, reservedAt, false);
+        } else {
+            throw new CarParkingFullException();
+        }
+    }
+
+    private Integer findAvailableParkingSpotId(String priceLevel) {
         List<ParkingSpot> parkingSpotList = repository.findAllByPriceLevel(priceLevel);
 
         Integer parkingSpotId = null;
@@ -28,11 +38,7 @@ public class CarParkingManager {
             }
         }
 
-        if (parkingSpotId != null) {
-            return addOrRemoveCar(carNumber, parkingSpotId, reservedAt, false);
-        } else {
-            throw new CarParkingFullException();
-        }
+        return parkingSpotId;
     }
 
     public void endParking(String carNumber, String priceLevel, LocalDateTime endTime) {
