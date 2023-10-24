@@ -23,30 +23,13 @@ public class CarParkingManager {
     }
 
     public void endParking(String carNumber, String priceLevel, LocalDateTime endTime) {
-        List<ParkingSpot> parkingSpotList = repository.findAllByPriceLevel(priceLevel);
+        ParkingSpot parkingSpot = repository.findByCar(carNumber).orElseThrow(CarNotFoundException::new);
 
-        LocalDateTime startTime = null;
-        Integer parkingSpotId = null;
-        for (ParkingSpot parkingSpot : parkingSpotList) {
-            if (parkingSpot.getCarNumber() != null && parkingSpot.getCarNumber().equals(carNumber)) {
-                parkingSpotId = parkingSpot.getId();
-                startTime = parkingSpot.getReservedAt();
-            }
-        }
-
-        if (parkingSpotId != null) {
-            addOrRemoveCar(carNumber, parkingSpotId, startTime, true);
-        } else {
-            throw new CarNotFoundException();
-        }
+        addOrRemoveCar(carNumber, parkingSpot.getId(), parkingSpot.getReservedAt(), true);
     }
 
     public String printReceipt(String car, LocalDateTime endTime) {
-        ParkingSpot parkingSpot = repository.findByCar(car);
-
-        if (parkingSpot == null) {
-            throw new CarNotFoundException();
-        }
+        ParkingSpot parkingSpot = repository.findByCar(car).orElseThrow(CarNotFoundException::new);
 
         Double price = parkingSpot.priceForTime(endTime);
 

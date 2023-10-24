@@ -11,5 +11,5 @@ public interface IParkingSpotRepository {
     ParkingSpot findById(Integer id);
     Optional<ParkingSpot> findByCarIsNullAndReservedAtIsNullAndPriceLevel(String priceLevel);
     ParkingSpot save(ParkingSpot parkingSpot);
-    ParkingSpot findByCar(String car);
+    Optional<ParkingSpot> findByCar(String car);
 }

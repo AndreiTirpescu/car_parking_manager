@@ -53,8 +53,7 @@ public class InMemoryParkingSpotRepository implements IParkingSpotRepository {
     }
 
     @Override
-    public ParkingSpot findByCar(String car) {
-        return parkingSpots.stream().filter(parkingSpot -> parkingSpot.getCarNumber().equals(car)).findFirst()
-                .orElse(null);
+    public Optional<ParkingSpot> findByCar(String car) {
+        return parkingSpots.stream().filter(parkingSpot -> parkingSpot.getCarNumber().equals(car)).findFirst();
     }
 }
