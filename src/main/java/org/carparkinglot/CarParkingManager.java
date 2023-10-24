@@ -18,19 +18,10 @@ public class CarParkingManager {
     }
 
     public ParkingSpot parkCar(String carNumber, String priceLevel, LocalDateTime reservedAt) {
-        Integer parkingSpotId = findAvailableParkingSpotId(priceLevel);
+        ParkingSpot spot = repository.findByCarIsNullAndReservedAtIsNullAndPriceLevel(priceLevel)
+                .orElseThrow(CarParkingFullException::new);
 
-        if (parkingSpotId != null) {
-            return addOrRemoveCar(carNumber, parkingSpotId, reservedAt, false);
-        } else {
-            throw new CarParkingFullException();
-        }
-    }
-
-    private Integer findAvailableParkingSpotId(String priceLevel) {
-        return repository.findByCarIsNullAndReservedAtIsNullAndPriceLevel(priceLevel)
-                .map(ParkingSpot::getId)
-                .orElse(null);
+        return addOrRemoveCar(carNumber, spot.getId(), reservedAt, false);
     }
 
     public void endParking(String carNumber, String priceLevel, LocalDateTime endTime) {
