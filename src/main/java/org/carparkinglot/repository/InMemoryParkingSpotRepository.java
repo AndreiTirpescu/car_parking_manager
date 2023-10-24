@@ -4,6 +4,7 @@ import org.carparkinglot.model.ParkingSpot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class InMemoryParkingSpotRepository implements IParkingSpotRepository {
 
@@ -25,6 +26,16 @@ public class InMemoryParkingSpotRepository implements IParkingSpotRepository {
     @Override
     public ParkingSpot findById(Integer id) {
         return parkingSpots.stream().filter(spot -> spot.getId().equals(id)).findFirst().orElse(null);
+    }
+
+    @Override
+    public Optional<ParkingSpot> findByCarIsNullAndReservedAtIsNullAndPriceLevel(String priceLevel) {
+        return parkingSpots.stream().filter(
+                        spot -> spot.getCarNumber() == null
+                                && spot.getReservedAt() == null
+                                && spot.getPriceLevel().equals(priceLevel)
+                )
+                .findFirst();
     }
 
     @Override

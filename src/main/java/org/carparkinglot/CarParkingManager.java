@@ -28,17 +28,9 @@ public class CarParkingManager {
     }
 
     private Integer findAvailableParkingSpotId(String priceLevel) {
-        List<ParkingSpot> parkingSpotList = repository.findAllByPriceLevel(priceLevel);
-
-        Integer parkingSpotId = null;
-        for (ParkingSpot parkingSpot : parkingSpotList) {
-            // parking spot is available
-            if (parkingSpot.getCarNumber() == null && parkingSpot.getReservedAt() == null) {
-                parkingSpotId = parkingSpot.getId();
-            }
-        }
-
-        return parkingSpotId;
+        return repository.findByCarIsNullAndReservedAtIsNullAndPriceLevel(priceLevel)
+                .map(ParkingSpot::getId)
+                .orElse(null);
     }
 
     public void endParking(String carNumber, String priceLevel, LocalDateTime endTime) {
