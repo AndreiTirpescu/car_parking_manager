@@ -57,9 +57,9 @@ public class CarParkingManagerTest {
 
         CarParkingManager parkingManager = new CarParkingManager(repository);
 
-        parkingManager.endParking(carNumber, level, leaveAt);
+        parkingManager.endParking(carNumber);
 
-        ParkingSpot emptySpot = repository.findById(2);
+        ParkingSpot emptySpot = repository.findById(2).get();
         Assert.assertNull(emptySpot.getReservedAt());
         Assert.assertNull(emptySpot.getCarNumber());
     }
@@ -76,7 +76,7 @@ public class CarParkingManagerTest {
         CarParkingManager parkingManager = new CarParkingManager(repository);
 
         Assert.assertThrows(CarNotFoundException.class,
-                () -> parkingManager.endParking("CRPLT2", "ENTRY_LEVEL", leaveAt)
+                () -> parkingManager.endParking("CRPLT2")
         );
     }
 

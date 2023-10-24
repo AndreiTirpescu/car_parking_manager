@@ -24,8 +24,8 @@ public class InMemoryParkingSpotRepository implements IParkingSpotRepository {
     }
 
     @Override
-    public ParkingSpot findById(Integer id) {
-        return parkingSpots.stream().filter(spot -> spot.getId().equals(id)).findFirst().orElse(null);
+    public Optional<ParkingSpot> findById(Integer id) {
+        return parkingSpots.stream().filter(spot -> spot.getId().equals(id)).findFirst();
     }
 
     @Override

@@ -70,4 +70,14 @@ public class ParkingSpot {
             default -> throw new UnknownPriceLevelException();
         };
     }
+
+    public void occupy(String car, LocalDateTime startTime) {
+        setCarNumber(car);
+        setReservedAt(startTime);
+    }
+
+    public void free() {
+        setCarNumber(null);
+        setReservedAt(null);
+    }
 }

@@ -2,6 +2,7 @@ package org.carparkinglot;
 
 import org.carparkinglot.exception.CarNotFoundException;
 import org.carparkinglot.exception.CarParkingFullException;
+import org.carparkinglot.exception.ParkingLotNotFoundException;
 import org.carparkinglot.model.ParkingSpot;
 import org.carparkinglot.repository.IParkingSpotRepository;
 
@@ -18,13 +19,13 @@ public class CarParkingManager {
         ParkingSpot spot = repository.findByCarIsNullAndReservedAtIsNullAndPriceLevel(priceLevel)
                 .orElseThrow(CarParkingFullException::new);
 
-        return addOrRemoveCar(carNumber, spot.getId(), reservedAt, false);
+        return addCar(carNumber, spot.getId(), reservedAt);
     }
 
-    public void endParking(String carNumber, String priceLevel, LocalDateTime endTime) {
+    public void endParking(String carNumber) {
         ParkingSpot parkingSpot = repository.findByCar(carNumber).orElseThrow(CarNotFoundException::new);
 
-        addOrRemoveCar(carNumber, parkingSpot.getId(), parkingSpot.getReservedAt(), true);
+        removeCar(parkingSpot.getId());
     }
 
     public String printReceipt(String car, LocalDateTime endTime) {
@@ -33,37 +34,17 @@ public class CarParkingManager {
         return ParkingReceipt.fromTimeAndParkingSpot(endTime, parkingSpot).print();
     }
 
-    private ParkingSpot addOrRemoveCar(String car, Integer psId, LocalDateTime startTime, boolean isRemove) {
-        if (isRemove) {
-            return removeCar(psId);
-        }
-
-        return addCar(car, psId, startTime);
-    }
-
     private ParkingSpot addCar(String car, Integer psId, LocalDateTime startTime) {
-        ParkingSpot spot = repository.findById(psId);
-
-        if (spot == null) {
-            return null;
-        }
-
-        spot.setCarNumber(car);
-        spot.setReservedAt(startTime);
+        ParkingSpot spot = repository.findById(psId).orElseThrow(ParkingLotNotFoundException::new);
+        spot.occupy(car, startTime);
 
         return repository.save(spot);
     }
 
-    private ParkingSpot removeCar(Integer psId) {
-        ParkingSpot spot = repository.findById(psId);
+    private void removeCar(Integer psId) {
+        ParkingSpot spot = repository.findById(psId).orElseThrow(CarNotFoundException::new);
+        spot.free();
 
-        if (spot == null) {
-            throw new CarNotFoundException();
-        }
-
-        spot.setCarNumber(null);
-        spot.setReservedAt(null);
-
-        return repository.save(spot);
+        repository.save(spot);
     }
 }
