@@ -6,7 +6,6 @@ import org.carparkinglot.model.ParkingSpot;
 import org.carparkinglot.repository.IParkingSpotRepository;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 public class CarParkingManager {
     private final IParkingSpotRepository repository;
@@ -31,10 +30,12 @@ public class CarParkingManager {
     public String printReceipt(String car, LocalDateTime endTime) {
         ParkingSpot parkingSpot = repository.findByCar(car).orElseThrow(CarNotFoundException::new);
 
-        Double price = parkingSpot.priceForTime(endTime);
+        return parkingReceiptFormat(endTime, parkingSpot.getCarNumber(), parkingSpot.getPriceLevel(), parkingSpot.getReservedAt(), parkingSpot.priceForTime(endTime));
+    }
 
-        return String.format("Car: %s\nPrice: %s\nPriceLevel: %s\nReservedAt: %s\nLeftAt: %s\n",
-                parkingSpot.getCarNumber(), price, parkingSpot.getPriceLevel(), parkingSpot.getReservedAt(), endTime);
+    private static String parkingReceiptFormat(LocalDateTime endTime, String carNumber, String priceLevel, LocalDateTime reservedAt, Double price) {
+
+        return String.format("Car: %s\nPrice: %s\nPriceLevel: %s\nReservedAt: %s\nLeftAt: %s\n", carNumber, price, priceLevel, reservedAt, endTime);
     }
 
     private ParkingSpot addOrRemoveCar(String car, Integer psId, LocalDateTime startTime, boolean isRemove) {
