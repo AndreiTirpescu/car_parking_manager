@@ -45,20 +45,12 @@ public class CarParkingManager {
     public String printReceipt(String car, LocalDateTime endTime) {
         ParkingSpot parkingSpot = repository.findByCar(car);
         if (parkingSpot != null) {
-            Double price = null;
-            if (parkingSpot.getPriceLevel().equals("ENTRY_LEVEL")) {
-                long hours = parkingSpot.parkingTime(endTime);
-
-                price = 0.5 * hours;
-            } else if (parkingSpot.getPriceLevel().equals("MID_LEVEL")) {
-                long hours = parkingSpot.parkingTime(endTime);
-
-                price = 1.5 * hours;
-            } else if (parkingSpot.getPriceLevel().equals("PREMIUM_LEVEL")) {
-                long hours = parkingSpot.parkingTime(endTime);
-
-                price = 3.0 * hours;
-            }
+            Double price = switch (parkingSpot.getPriceLevel()) {
+                case "ENTRY_LEVEL" -> 0.5 * parkingSpot.parkingTime(endTime);
+                case "MID_LEVEL" -> 1.5 * parkingSpot.parkingTime(endTime);
+                case "PREMIUM_LEVEL" -> 3.0 * parkingSpot.parkingTime(endTime);
+                default -> null;
+            };
             if (price == null) {
                 throw new UnknownPriceLevelException();
             }
