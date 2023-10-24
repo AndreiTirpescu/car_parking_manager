@@ -11,44 +11,44 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 public class CarParkingManager {
-    private IParkingSpotRepository repository;
+    private final IParkingSpotRepository repository;
 
     public CarParkingManager(IParkingSpotRepository repository) {
         this.repository = repository;
     }
 
-    public ParkingSpot parkCar(String c, String lvl, LocalDateTime start) {
-        List<ParkingSpot> parkingSpotList = repository.findAllByPriceLevel(lvl);
+    public ParkingSpot parkCar(String carNumber, String priceLevel, LocalDateTime reservedAt) {
+        List<ParkingSpot> parkingSpotList = repository.findAllByPriceLevel(priceLevel);
 
-        Integer psId = null;
-        for (ParkingSpot ps : parkingSpotList) {
+        Integer parkingSpotId = null;
+        for (ParkingSpot parkingSpot : parkingSpotList) {
             // parking spot is available
-            if (ps.getCarNumber() == null && ps.getReservedAt() == null) {
-                psId = ps.getId();
+            if (parkingSpot.getCarNumber() == null && parkingSpot.getReservedAt() == null) {
+                parkingSpotId = parkingSpot.getId();
             }
         }
 
-        if (psId != null) {
-            return addOrRemoveCar(c, psId, start, false);
+        if (parkingSpotId != null) {
+            return addOrRemoveCar(carNumber, parkingSpotId, reservedAt, false);
         } else {
             throw new CarParkingFullException();
         }
     }
 
-    public void endParking(String c, String lvl, LocalDateTime endTime) {
-        List<ParkingSpot> parkingSpotList = repository.findAllByPriceLevel(lvl);
+    public void endParking(String carNumber, String priceLevel, LocalDateTime endTime) {
+        List<ParkingSpot> parkingSpotList = repository.findAllByPriceLevel(priceLevel);
 
         LocalDateTime startTime = null;
-        Integer psId = null;
-        for (ParkingSpot ps : parkingSpotList) {
-            if (ps.getCarNumber() != null && ps.getCarNumber().equals(c)) {
-                psId = ps.getId();
-                startTime = ps.getReservedAt();
+        Integer parkingSpotId = null;
+        for (ParkingSpot parkingSpot : parkingSpotList) {
+            if (parkingSpot.getCarNumber() != null && parkingSpot.getCarNumber().equals(carNumber)) {
+                parkingSpotId = parkingSpot.getId();
+                startTime = parkingSpot.getReservedAt();
             }
         }
 
-        if (psId != null) {
-            addOrRemoveCar(c, psId, startTime, true);
+        if (parkingSpotId != null) {
+            addOrRemoveCar(carNumber, parkingSpotId, startTime, true);
         } else {
             throw new CarNotFoundException();
         }
