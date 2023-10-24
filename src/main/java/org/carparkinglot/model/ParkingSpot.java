@@ -1,5 +1,7 @@
 package org.carparkinglot.model;
 
+import org.carparkinglot.exception.UnknownPriceLevelException;
+
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
@@ -58,5 +60,14 @@ public class ParkingSpot {
         }
 
         return hours;
+    }
+
+    public Double priceForTime(LocalDateTime endTime) {
+        return switch (getPriceLevel()) {
+            case "ENTRY_LEVEL" -> 0.5 * parkingTime(endTime);
+            case "MID_LEVEL" -> 1.5 * parkingTime(endTime);
+            case "PREMIUM_LEVEL" -> 3.0 * parkingTime(endTime);
+            default -> throw new UnknownPriceLevelException();
+        };
     }
 }

@@ -2,7 +2,6 @@ package org.carparkinglot;
 
 import org.carparkinglot.exception.CarNotFoundException;
 import org.carparkinglot.exception.CarParkingFullException;
-import org.carparkinglot.exception.UnknownPriceLevelException;
 import org.carparkinglot.model.ParkingSpot;
 import org.carparkinglot.repository.IParkingSpotRepository;
 
@@ -45,12 +44,7 @@ public class CarParkingManager {
     public String printReceipt(String car, LocalDateTime endTime) {
         ParkingSpot parkingSpot = repository.findByCar(car);
         if (parkingSpot != null) {
-            Double price = switch (parkingSpot.getPriceLevel()) {
-                case "ENTRY_LEVEL" -> 0.5 * parkingSpot.parkingTime(endTime);
-                case "MID_LEVEL" -> 1.5 * parkingSpot.parkingTime(endTime);
-                case "PREMIUM_LEVEL" -> 3.0 * parkingSpot.parkingTime(endTime);
-                default -> throw new UnknownPriceLevelException();
-            };
+            Double price = parkingSpot.priceForTime(endTime);
 
             return String.format("Car: %s\nPrice: %s\nPriceLevel: %s\nReservedAt: %s\nLeftAt: %s\n",
                     parkingSpot.getCarNumber(), price, parkingSpot.getPriceLevel(), parkingSpot.getReservedAt(), endTime);
