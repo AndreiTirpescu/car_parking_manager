@@ -43,15 +43,15 @@ public class CarParkingManager {
 
     public String printReceipt(String car, LocalDateTime endTime) {
         ParkingSpot parkingSpot = repository.findByCar(car);
-        if (parkingSpot != null) {
-            Double price = parkingSpot.priceForTime(endTime);
 
-            return String.format("Car: %s\nPrice: %s\nPriceLevel: %s\nReservedAt: %s\nLeftAt: %s\n",
-                    parkingSpot.getCarNumber(), price, parkingSpot.getPriceLevel(), parkingSpot.getReservedAt(), endTime);
-
-        } else {
+        if (parkingSpot == null) {
             throw new CarNotFoundException();
         }
+
+        Double price = parkingSpot.priceForTime(endTime);
+
+        return String.format("Car: %s\nPrice: %s\nPriceLevel: %s\nReservedAt: %s\nLeftAt: %s\n",
+                parkingSpot.getCarNumber(), price, parkingSpot.getPriceLevel(), parkingSpot.getReservedAt(), endTime);
     }
 
     private ParkingSpot addOrRemoveCar(String car, Integer psId, LocalDateTime startTime, boolean isRemove) {
