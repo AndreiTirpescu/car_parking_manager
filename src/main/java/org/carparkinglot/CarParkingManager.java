@@ -48,26 +48,26 @@ public class CarParkingManager {
         if (parkingSpot != null) {
             Double price = null;
             if (parkingSpot.getPriceLevel().equals("ENTRY_LEVEL")) {
-                long minutes = ChronoUnit.HOURS.between(parkingSpot.getReservedAt(), endTime);
-                if (minutes < 1) {
-                    minutes = 1;
+                long hours = ChronoUnit.HOURS.between(parkingSpot.getReservedAt(), endTime);
+                if (hours < 1) {
+                    hours = 1;
                 }
 
-                price = 0.5 * minutes;
+                price = 0.5 * hours;
             } else if (parkingSpot.getPriceLevel().equals("MID_LEVEL")) {
-                long minutes = ChronoUnit.HOURS.between(parkingSpot.getReservedAt(), endTime);
-                if (minutes < 1) {
-                    minutes = 1;
+                long hours = ChronoUnit.HOURS.between(parkingSpot.getReservedAt(), endTime);
+                if (hours < 1) {
+                    hours = 1;
                 }
 
-                price = 1.5 * minutes;
+                price = 1.5 * hours;
             } else if (parkingSpot.getPriceLevel().equals("PREMIUM_LEVEL")) {
-                long minutes = ChronoUnit.HOURS.between(parkingSpot.getReservedAt(), endTime);
-                if (minutes < 1) {
-                    minutes = 1;
+                long hours = ChronoUnit.HOURS.between(parkingSpot.getReservedAt(), endTime);
+                if (hours < 1) {
+                    hours = 1;
                 }
 
-                price = 3.0 * minutes;
+                price = 3.0 * hours;
             }
             if (price == null) {
                 throw new UnknownPriceLevelException();
