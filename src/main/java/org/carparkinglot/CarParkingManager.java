@@ -49,11 +49,8 @@ public class CarParkingManager {
                 case "ENTRY_LEVEL" -> 0.5 * parkingSpot.parkingTime(endTime);
                 case "MID_LEVEL" -> 1.5 * parkingSpot.parkingTime(endTime);
                 case "PREMIUM_LEVEL" -> 3.0 * parkingSpot.parkingTime(endTime);
-                default -> null;
+                default -> throw new UnknownPriceLevelException();
             };
-            if (price == null) {
-                throw new UnknownPriceLevelException();
-            }
 
             return String.format("Car: %s\nPrice: %s\nPriceLevel: %s\nReservedAt: %s\nLeftAt: %s\n",
                     parkingSpot.getCarNumber(), price, parkingSpot.getPriceLevel(), parkingSpot.getReservedAt(), endTime);
