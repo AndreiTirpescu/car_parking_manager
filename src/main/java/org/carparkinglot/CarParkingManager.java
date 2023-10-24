@@ -7,7 +7,6 @@ import org.carparkinglot.model.ParkingSpot;
 import org.carparkinglot.repository.IParkingSpotRepository;
 
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 public class CarParkingManager {
@@ -48,24 +47,15 @@ public class CarParkingManager {
         if (parkingSpot != null) {
             Double price = null;
             if (parkingSpot.getPriceLevel().equals("ENTRY_LEVEL")) {
-                long hours = ChronoUnit.HOURS.between(parkingSpot.getReservedAt(), endTime);
-                if (hours < 1) {
-                    hours = 1;
-                }
+                long hours = parkingSpot.parkingTime(endTime);
 
                 price = 0.5 * hours;
             } else if (parkingSpot.getPriceLevel().equals("MID_LEVEL")) {
-                long hours = ChronoUnit.HOURS.between(parkingSpot.getReservedAt(), endTime);
-                if (hours < 1) {
-                    hours = 1;
-                }
+                long hours = parkingSpot.parkingTime(endTime);
 
                 price = 1.5 * hours;
             } else if (parkingSpot.getPriceLevel().equals("PREMIUM_LEVEL")) {
-                long hours = ChronoUnit.HOURS.between(parkingSpot.getReservedAt(), endTime);
-                if (hours < 1) {
-                    hours = 1;
-                }
+                long hours = parkingSpot.parkingTime(endTime);
 
                 price = 3.0 * hours;
             }

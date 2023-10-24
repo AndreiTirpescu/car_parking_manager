@@ -1,6 +1,7 @@
 package org.carparkinglot.model;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 public class ParkingSpot {
     private Integer id;
@@ -48,5 +49,14 @@ public class ParkingSpot {
 
     public void setReservedAt(LocalDateTime reservedAt) {
         this.reservedAt = reservedAt;
+    }
+
+    public long parkingTime(LocalDateTime endTime) {
+        long hours = ChronoUnit.HOURS.between(getReservedAt(), endTime);
+        if (hours < 1) {
+            return 1;
+        }
+
+        return hours;
     }
 }
